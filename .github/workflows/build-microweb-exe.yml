@@ -1,0 +1,49 @@
+name: Build MicroWeb.exe
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.8 (Windows 7 compatible)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+          architecture: "x64"
+
+      - name: Install dependencies and build MicroWeb.exe
+        shell: pwsh
+        run: |
+          if (Test-Path "python/microweb.spec") {
+            Set-Location python
+          }
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pyinstaller --noconfirm --clean microweb.spec
+
+      - name: Locate build output
+        id: locate
+        shell: pwsh
+        run: |
+          if (Test-Path "python/dist/MicroWeb") {
+            echo "dist_path=python/dist/MicroWeb" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "dist_path=dist/MicroWeb" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Upload MicroWeb.exe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MicroWeb-Windows-exe
+          path: ${{ steps.locate.outputs.dist_path }}
+          if-no-files-found: error

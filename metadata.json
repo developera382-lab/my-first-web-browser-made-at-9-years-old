@@ -1,0 +1,6 @@
+{
+  "name": "MicroWeb — Python Chrome-Style Browser",
+  "description": "A Chrome-inspired web browser built for Python with PyQt6-WebEngine, featuring an interactive browser preview, full source code studio, and Windows .exe build kit.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
